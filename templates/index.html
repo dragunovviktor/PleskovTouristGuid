@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="profile">
+    <div class="sidebar">
+        <h2>Псковская область</h2>
+        <img src="{{ url_for('static', filename='pskov-coat-of-arms.png') }}" alt="Герб Псковской области">
+        <div class="map-container">
+            <img src="{{ url_for('static', filename='pskov-map.png') }}" alt="Карта Псковской области">
+        </div>
+    </div>
+    <div class="main-content">
+        <h1>PleskovTravelGuild</h1>
+        <p>Узнавай о интересных местах: отелях, ресторанах, достопримечательностях!</p>
+        <p>Все на едином портале, быстро и удобно!</p>
+        <!-- Дополнительный контент -->
+    </div>
+</div>
+{% endblock %}
