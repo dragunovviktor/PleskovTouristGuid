@@ -4,10 +4,11 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
-from models import db, User, Place, SavedPlace
+from models import db, User, Place, SavedPlace, SavedRestaurant
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
+
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -24,80 +25,7 @@ def index():
 
 @app.route('/restaurants')
 def restaurants():
-    restaurants = [
-        {
-            "name": "Ресторан Helga",
-            "reviews": "430 отзывов",
-            "status": "Открыто",
-            "cuisine": "Европейская, Гриль",
-            "price_range": "$$ - $$$",
-            "description": "Рекомендуем. Всё было очень вкусно. Красивая и быстрая подача. Лучшее место для гурманов в Пскове.",
-            "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/96/87/a4/helga.jpg?w=600&h=-1&s=1"
-        },
-        {
-            "name": "Рестораны и кафе 'Двор Подзноева'",
-            "reviews": "678 отзывов",
-            "status": "Открыто",
-            "cuisine": "Европейская, Русская",
-            "price_range": "$$ - $$$",
-            "description": "Самый лучший из провинциальных ресторанов. Лучше, чем ожидали",
-            "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/10/6b/18/0f/caption.jpg?w=600&h=-1&s=1"
-        },
-        {
-            "name": "Mojo GastroBar",
-            "reviews": "376 отзывов",
-            "status": "Открыто",
-            "cuisine": "Современная, Здоровая",
-            "price_range": "$$ - $$$",
-            "description": "Восторг! Пожалуй лучшее заведение",
-            "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/c2/91/74/caption.jpg?w=600&h=-1&s=1"
-        },
-        {
-            "name": "Ресто-Бар Моя История",
-            "reviews": "136 отзывов",
-            "status": "Открыто",
-            "cuisine": "Европейская, Азиатская",
-            "price_range": "$$ - $$$",
-            "description": "Долго, но вкусно. Первый визит. На 4+",
-            "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/c2/91/74/caption.jpg?w=600&h=-1&s=1"
-        },
-        {
-            "name": "Трапезные палаты",
-            "reviews": "271 отзыв",
-            "status": "Открыто",
-            "cuisine": "Европейская, Русская",
-            "price_range": "$$ - $$$",
-            "description": "Ел с удовольствием, счет изучал без удовольствия. Достойно, красиво и очень вкусно!",
-            "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/9f/29/cb/interior.jpg?w=600&h=400&s=1"
-        },
-        {
-            "name": "Кафе 'Пироговые палаты' Двора Подзноева",
-            "reviews": "190 отзывов",
-            "status": "Открыто",
-            "cuisine": "Кафе, Русская",
-            "price_range": "$",
-            "description": "Настоящие вкусные пироги. На любой вкус и фантазию",
-            "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/10/77/eb/06/caption.jpg?w=600&h=-1&s=1"
-        },
-        {
-            "name": "Ресторан 'Покровский'",
-            "reviews": "61 отзыв",
-            "status": "Открыто",
-            "cuisine": "Европейская, Азиатская",
-            "price_range": "$$ - $$$",
-            "description": "Достойный ресторан. Идеально!!! Давно не встречала такого качества!",
-            "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/e8/0b/68/caption.jpg?w=600&h=-1&s=1"
-        },
-        {
-            "name": "Пивной Бар 903",
-            "reviews": "61 отзыв",
-            "status": "Открыто",
-            "cuisine": "Европейская",
-            "price_range": "$$ - $$$",
-            "description": "Уютное место возле Кремля. Приятный вечер",
-            "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/66/91/a9/img-20201205-123921-1.jpg?w=600&h=400&s=1"
-        }
-    ]
+    places = Place.query.all()
     return render_template('restaurants.html', restaurants=restaurants)
 
 @app.route('/attractions')
@@ -163,6 +91,33 @@ def login():
             flash('Login failed. Check your username and/or password.', 'danger')
     return render_template('login.html')
 
+
+@app.route('/save_restaurant', methods=['POST'])
+@login_required
+def save_restaurant():
+    data = request.get_json()
+    restaurant_name = data.get('restaurant_name')
+
+    # Валидация формы: проверка, не пустые ли поля
+    if not restaurant_name:
+        flash('Пожалуйста, введите название ресторана.')
+        return redirect(url_for('restaurants'))
+
+    # Проверка, не сохранен ли уже ресторан
+    existing_restaurant = SavedRestaurant.query.filter_by(user_id=current_user.id,
+                                                          restaurant_name=restaurant_name).first()
+    if existing_restaurant:
+        flash('Этот ресторан уже сохранен.')
+        return redirect(url_for('restaurants'))
+
+    # Создание новой записи
+    new_restaurant = SavedRestaurant(user_id=current_user.id, restaurant_name=restaurant_name)
+    db.session.add(new_restaurant)
+    db.session.commit()
+
+    flash('Ресторан успешно сохранен!')
+    return redirect(url_for('restaurants'))
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -185,8 +140,9 @@ def save_place(place_id):
 @app.route('/profile')
 @login_required
 def profile():
-    saved_places = SavedPlace.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', saved_places=saved_places)
+    saved_places = SavedPlace.query.filter_by(user_id=current_user.id).all()  # Добавьте этот код
+    saved_restaurants = SavedRestaurant.query.filter_by(user_id=current_user.id).all()  # Добавьте этот код
+    return render_template('profile.html', saved_places=saved_places, saved_restaurants=saved_restaurants)
 
 if __name__ == '__main__':
     app.run(debug=True)

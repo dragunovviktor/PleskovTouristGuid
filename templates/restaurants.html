@@ -1,10 +1,109 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Рестораны</title>
     <style>
+
+                body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            background-color: #444;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #555;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .restaurant-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .restaurant-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: calc(33% - 20px);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .restaurant-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .restaurant-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .restaurant-info {
+            padding: 15px;
+        }
+
+        .restaurant-info h2 {
+            margin: 0 0 10px;
+        }
+
+        .restaurant-info p {
+            margin: 5px 0;
+        }
+
+        .save-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .save-button:hover {
+            background-color: #45a049;
+        }
+
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -199,6 +298,7 @@
                     <p>430 отзывов | Открыто</p>
                     <p>Европейская, Гриль | $$ - $$$</p>
                     <p>Рекомендуем. Всё было очень вкусно. Красивая и быстрая подача. Лучшее место для гурманов в Пскове.</p>
+                    <button class="save-button" onclick="saveToProfile('Dunkan')">Сохранить</button>
                 </div>
             </div>
             <div class="restaurant-card" data-modal="modal-dunkan">
@@ -208,6 +308,7 @@
                     <p>97 отзывов | Открыто</p>
                     <p>Гриль, Кавказская, Грузинская, Пивные  | $$ - $$$</p>
                     <p>Пришли в ресторан по рекомендации, не разочаровались. Очень уютное место, акцент сделан на пивное меню, но это не должно смущать, даже если просто пришли пообедать. Есть и колбаски, и рыба, и традиционный гриль (шашлык и т.п.) Персонал предупредительный и вежливый. </p>
+                    <button class="save-button" onclick="saveToProfile('Dunkan')">Сохранить</button>
                 </div>
 
 
@@ -219,6 +320,7 @@
                     <p>Отзывы | Открыто</p>
                     <p>Пиво, стейки, паб | $ - $$</p>
             <p>Приятное место с отличным выбором пива и стейков.</p>
+            <button class="save-button" onclick="saveToProfile('Бар 903')">Сохранить</button>
         </div>
     </div>
             <div class="restaurant-card" data-modal="modal-dvor">
@@ -228,6 +330,7 @@
                     <p>678 отзывов | Открыто</p>
                     <p>Европейская, Русская | $$ - $$$</p>
                     <p>Самый лучший из провинциальных ресторанов. Лучше, чем ожидали.</p>
+                    <button class="save-button" onclick="saveToProfile('Рестораны и кафе 'Двор Подзноева')">Сохранить</button>
                 </div>
             </div>
 
@@ -238,6 +341,7 @@
                     <p>376 отзывов | Открыто</p>
                     <p>Современная, Здоровая | $$ - $$$</p>
                     <p>Восторг! Пожалуй лучшее заведение.</p>
+                    <button class="save-button" onclick="saveToProfile('Mojo GastroBar')">Сохранить</button>
                 </div>
             </div>
 
@@ -248,6 +352,7 @@
                     <p>136 отзывов | Открыто</p>
                     <p>Европейская, Азиатская | $$ - $$$</p>
                     <p>Долго, но вкусно. Первый визит. На 4+.</p>
+                    <button class="save-button" onclick="saveToProfile('Ресто-Бар Моя История')">Сохранить</button>
                 </div>
             </div>
 
@@ -258,6 +363,7 @@
                     <p>271 отзыв | Открыто</p>
                     <p>Европейская, Русская | $$ - $$$</p>
                     <p>Ел с удовольствием, счет изучал без удовольствия. Достойно, красиво и очень вкусно!</p>
+                    <button class="save-button" onclick="saveToProfile('Трапезные палаты')">Сохранить</button>
                 </div>
             </div>
 
@@ -268,6 +374,7 @@
                     <p>190 отзывов | Открыто</p>
                     <p>Кафе, Русская | $</p>
                     <p>Настоящий стиль и вкусно. Определенно стоит попробовать!</p>
+                    <button class="save-button" onclick="saveToProfile('Пироговые палаты')">Сохранить</button>
                 </div>
             </div>
         </div>
@@ -538,7 +645,59 @@
         });
 
     </script>
+    <script>
+    async function saveToProfile(restaurantName, description, imageUrl) {
+        try {
+            const response = await fetch('/save_restaurant', { // Измените на '/save_restaurant'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    restaurant_name: restaurantName,
+                    image_url: imageUrl
+                })
+            });
 
+            if (response.ok) {
+                alert('Ресторан сохранен в ваш профиль!');
+            } else {
+                alert('Ошибка при сохранении ресторана.');
+            }
+        } catch (error) {
+            alert('Произошла ошибка. Попробуйте еще раз.');
+        }
+    }
+    </script>
+
+        <script>
+        document.querySelectorAll('.save-restaurant').forEach(button => {
+            button.addEventListener('click', function() {
+                const restaurantName = this.getAttribute('data-name');
+                const imageUrl = this.getAttribute('data-image');
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/save_restaurant';
+
+                const nameInput = document.createElement('input');
+                nameInput.type = 'hidden';
+                nameInput.name = 'restaurant_name';
+                nameInput.value = restaurantName;
+                form.appendChild(nameInput);
+
+                const imageInput = document.createElement('input');
+                imageInput.type = 'hidden';
+                imageInput.name = 'image_url';
+                imageInput.value = imageUrl;
+                form.appendChild(imageInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            });
+        });
+    </script>
 
 </body>
+
 </html>
