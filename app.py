@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
 from models import db, User, Place, SavedPlace, SavedRestaurant
+import logging
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
@@ -18,6 +19,7 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 @app.route('/')
 def index():
